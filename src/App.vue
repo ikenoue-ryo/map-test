@@ -1,8 +1,6 @@
 <template>
   <div>
-    <input type="text" v-model="address">
-    <button type="button" @click="mapSearch">検索</button>
-    <div id="map"></div>
+    <div class="map" ref="googleMap"/>
   </div>
 </template>
 
@@ -14,33 +12,41 @@ export default {
   name: 'Map',
   data() {
     return {
-      map: {},
-      marker: null,
-      geocoder: {},
-      address: '福岡県福岡市博多区'
+      google: null,
+      comments: null,
+      mapConfig: {
+        center: {
+          lat: null,
+          lng: null
+        },
+        zoom: 17
+      },
+      lat: '',
+      lng: '',
     }
   },
-  mounted() {
-    this.map = new google.maps.Map(document.getElementById('map'));
-    this.geocoder = new google.maps.Geocoder();
+  async mounted() {
+    const URL = 'https://maps.googleapis.com/maps/api/geocode/json?new_forward_geocoder=true&address='
+    const gapiKey = '&key=' + 'ここにAPIキー'
+    const search_address = '福岡県福岡市中央区天神' 
+
+    this.mapConfig.center.lat = 33.6000737 //①
+    this.mapConfig.center.lng = 130.4279274 //②
+
+    axios.get(URL + search_address + gapiKey)
+    .then(response => { 
+      console.log(response) //responseのデータを①と②に渡したい。 JSON：response.data.results[0].geometry.bounds.northeast.lng
+      })
+    .catch(response => console.log(response))
+
+    this.google = await GoogleMapsApiLoader({
+      apiKey: 'ここにAPIキー'
+    });
+    this.initializeMap();
   },
   methods: {
-    mapSearch() {
-      this.geocoder.geocode({
-        'address': this.address,
-        newForwardGeocoder:true
-      }, (results, status) => {
-        if (status === google.maps.GeocoderStatus.OK) {
-          this.map.setCenter(results[0].geometry.location);
-          // 緯度経度の取得
-          // results[0].geometry.location.lat();
-          // results[0].geometry.location.lng();
-          this.marker = new google.maps.Marker({
-            map: this.map,
-            position: results[0].geometry.location
-          });
-        }
-      });
+    initializeMap() {
+      new this.google.maps.Map(this.$refs.googleMap, this.mapConfig);
     }
   }
 }
