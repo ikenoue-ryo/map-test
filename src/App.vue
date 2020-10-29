@@ -6,12 +6,10 @@
   </div>
 </template>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDX2C-4W9b_Os4iYD4HUmNxJD4ukZX3paA"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=ここにAPIキー"></script>
 
 
 <script>
-// import axios from 'axios';
-
 export default {
   name: 'Map',
   data() {
@@ -49,8 +47,5 @@ export default {
 </script>
 
 <style scoped>
-.map {
-  width: 500px;
-  height: 500px;
-}
+
 </style>
