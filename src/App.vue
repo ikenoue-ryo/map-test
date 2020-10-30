@@ -6,23 +6,26 @@
   </div>
 </template>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=ここにAPIキー"></script>
-
 
 <script>
 export default {
   name: 'Map',
+  metaInfo: {
+    script: [
+      { src: 'https://maps.googleapis.com/maps/api/js?key=ここにAPI', async: true, defer: true }
+    ],
+  },
   data() {
     return {
       map: {},
       marker: null,
       geocoder: {},
-      address: '福岡県福岡市博多区'
+      address: ''
     }
   },
   mounted() {
-    this.map = new google.maps.Map(document.getElementById('map'));
-    this.geocoder = new google.maps.Geocoder();
+    this.map = new window.google.maps.Map(document.getElementById('map'));
+    this.geocoder = new window.google.maps.Geocoder();
   },
   methods: {
     mapSearch() {
@@ -30,15 +33,16 @@ export default {
         'address': this.address,
         newForwardGeocoder:true
       }, (results, status) => {
-        if (status === google.maps.GeocoderStatus.OK) {
+        if (status === window.google.maps.GeocoderStatus.OK) {
           this.map.setCenter(results[0].geometry.location);
           // 緯度経度の取得
           // results[0].geometry.location.lat();
           // results[0].geometry.location.lng();
-          this.marker = new google.maps.Marker({
+          this.marker = new window.google.maps.Marker({
             map: this.map,
             position: results[0].geometry.location
           });
+          console.log('ここ', results)
         }
       });
     }
@@ -47,5 +51,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>
