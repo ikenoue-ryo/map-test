@@ -3,6 +3,7 @@
     <input type="text" v-model="address">
     <button type="button" @click="mapSearch">検索</button>
     <div id="map"></div>
+    
   </div>
 </template>
 
@@ -12,7 +13,7 @@ export default {
   name: 'Map',
   metaInfo: {
     script: [
-      { src: 'https://maps.googleapis.com/maps/api/js?key=APIキーいれてます', async: true, defer: true }
+      { src: `https://maps.googleapis.com/maps/api/js?key=${process.env.VUE_APP_GOOGLE_MAP_API}&callback=initMap`, async: true, defer: true }
     ],
   },
   data() {
@@ -24,8 +25,11 @@ export default {
     }
   },
   mounted() {
-    this.map = new window.google.maps.Map(document.getElementById('map'));
-    this.geocoder = new window.google.maps.Geocoder();
+    window.initMap = () => {
+      this.map = new window.google.maps.Map(document.getElementById('map'));
+      this.geocoder = new window.google.maps.Geocoder();
+    }
+    
   },
   methods: {
     mapSearch() {
@@ -42,7 +46,7 @@ export default {
             map: this.map,
             position: results[0].geometry.location
           });
-          console.log(results)
+
         }
       });
     }
@@ -50,5 +54,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+#map {
+  width: 600px;
+  height: 600px;
+}
 </style>
