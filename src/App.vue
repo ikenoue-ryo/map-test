@@ -2,6 +2,7 @@
   <div>
     <input type="text" v-model="address">
     <button type="button" @click="mapSearch">検索</button>
+    {{ ido }}
     <div id="map"></div>
     
   </div>
@@ -21,15 +22,24 @@ export default {
       map: {},
       marker: null,
       geocoder: {},
-      address: ''
+      address: '福岡県福岡市博多区堅粕',
+      ido: '',
+      keido: ''
     }
   },
   mounted() {
     window.initMap = () => {
-      this.map = new window.google.maps.Map(document.getElementById('map'));
+      this.map = new window.google.maps.Map(document.getElementById('map'),
+      {
+        center: {
+          lat: this.ido,
+          lng: this.keido
+        },
+        zoom: 19
+      }
+      );
       this.geocoder = new window.google.maps.Geocoder();
     }
-    
   },
   methods: {
     mapSearch() {
@@ -46,7 +56,9 @@ export default {
             map: this.map,
             position: results[0].geometry.location
           });
-
+          console.log(results)
+          this.ido = results[0].geometry.location.lat()
+          this.keido = results[0].geometry.location.lng()
         }
       });
     }
@@ -60,3 +72,4 @@ export default {
   height: 600px;
 }
 </style>
+
